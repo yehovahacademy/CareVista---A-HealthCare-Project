@@ -10,7 +10,7 @@ class RegisterUser(BaseModel):
     email: str
     contact: str
 
-@router.post("/register")
+@router.post("/auth/register")
 def register_user(user: RegisterUser):
 
     if len(user.password) < 8:
