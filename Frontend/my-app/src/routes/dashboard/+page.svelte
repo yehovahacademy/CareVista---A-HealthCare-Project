@@ -9,7 +9,7 @@
     async function calculateBMI() {
 
         const response = await fetch(
-            `http://127.0.0.1:8000/bmi?weight=${weight}&height=${height}`
+            `carevista-a-healthcare-project-production.up.railway.app?weight=${weight}&height=${height}`
         )
 
         const data = await response.json()

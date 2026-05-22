@@ -9,7 +9,7 @@
 
   async function registerUser() {
 
-		const response = await fetch("http://127.0.0.1:8000/register", {
+		const response = await fetch("carevista-a-healthcare-project-production.up.railway.app", {
 			method: "POST",
 
 			headers: {
