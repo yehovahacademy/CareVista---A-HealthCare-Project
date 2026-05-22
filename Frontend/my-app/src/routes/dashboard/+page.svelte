@@ -1,56 +1,61 @@
 <script>
- let weight = $state('')
-let height = $state('')
-let bmi = $state('')          // Changed from $derived to $state so we can assign it
-let status = $state('')
+ 
 
-async function calculateBMI() {
-    try {
-        // Added https:// to prevent relative route bugs
-        const response = await fetch(
-            `https://carevista-a-healthcare-project-production.up.railway.app/bmi?weight=${weight}&height=${height}`
-        )
+<script>
+    // --- BMI State ---
+    let weight = $state('');
+    let height = $state('');
+    let bmi = $state(''); // Regular state so it can accept the backend calculation
+    let status = $state('');
 
-        if (!response.ok) {
-            status = `Error: ${response.status}`
-            return
+    async function calculateBMI() {
+        try {
+            // Explicitly using https:// to route to Railway
+            const response = await fetch(
+                `https://carevista-a-healthcare-project-production.up.railway.app/bmi?weight=${weight}&height=${height}`
+            );
+
+            if (!response.ok) {
+                status = `Error: ${response.status}`;
+                return;
+            }
+
+            const data = await response.json();
+            bmi = data.bmi;
+            status = data.status;
+        } catch (error) {
+            console.error('Error fetching BMI data:', error);
+            status = 'Error fetching data';
         }
-
-        const data = await response.json()
-        bmi = data.bmi         // Works perfectly now
-        status = data.status
-    } catch (error) {
-        console.error('Error fetching BMI data:', error)
-        status = 'Error fetching data'
     }
-}
 
-// For hydration
-let water = $state('')
-let goal = $state('')
-let percentage = $state('')
-let hydrationStatus = $state('')
+    // --- Hydration State ---
+    let water = $state('');
+    let goal = $state('');
+    let percentage = $state('');
+    let hydrationStatus = $state('');
 
-async function checkHydration() {
-    try {
-        // Added https:// to prevent relative route bugs
-        const res = await fetch(
-            `https://carevista-a-healthcare-project-production.up.railway.app/hydration?water=${water}&goal=${goal}`
-        )
+    async function checkHydration() {
+        try {
+            // Explicitly using https:// to route to Railway
+            const res = await fetch(
+                `https://carevista-a-healthcare-project-production.up.railway.app/hydration?water=${water}&goal=${goal}`
+            );
 
-        if (!res.ok) {
-            hydrationStatus = `Error: ${res.status} ${res.statusText}`
-            return
+            if (!res.ok) {
+                hydrationStatus = `Error: ${res.status} ${res.statusText}`;
+                return;
+            }
+
+            const data = await res.json();
+            hydrationStatus = data.status;   
+            percentage = data.ratio; // Matches the key returned by your backend API
+        } catch (error) {
+            console.error('Error fetching hydration data:', error);
+            hydrationStatus = 'Error fetching data';
         }
-
-        const data = await res.json()
-        hydrationStatus = data.status   
-        percentage = data.ratio         
-    } catch (error) {
-        console.error('Error fetching hydration data:', error)
-        hydrationStatus = 'Error fetching data'
     }
-}
+</script>
 
 
 </script>

@@ -1,58 +1,54 @@
 <script>
-  let fname = $state('')
-let lname = $state('')
-let email = $state('')
-let contact = $state('')
-let password = $state('')
-let terms = $state(false)
-let toast = $state(null)
+    let fname = $state('');
+    let lname = $state('');
+    let email = $state('');
+    let contact = $state('');
+    let password = $state('');
+    let terms = $state(false);
+    let toast = $state(null);
 
-async function registerUser() {
-  try {
-    // Added https:// to the URL
-    const response = await fetch("https://carevista-a-healthcare-project-production.up.railway.app/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        fname,
-        lname,
-        email,
-        contact,
-        password
-      })
-    })
+    async function registerUser() {
+        // Prevent submission if terms aren't accepted
+        if (!terms) {
+            toast = { type: 'error', message: 'You must accept the terms and conditions.' };
+            return;
+        }
 
-    if (!response.ok) {
-      toast = { type: 'error', message: `Registration failed: ${response.status}` }
-      return
+        try {
+            const response = await fetch(
+                "https://carevista-a-healthcare-project-production.up.railway.app/auth/register", 
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        fname,
+                        lname,
+                        email,
+                        contact,
+                        password
+                    })
+                }
+            );
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                toast = { type: 'error', message: errorData.detail || `Registration failed: ${response.status}` };
+                return;
+            }
+
+            const data = await response.json();
+            toast = { type: 'success', message: data.message || 'Registration successful!' };
+            
+            // Clear inputs on success if desired
+            fname = ''; lname = ''; email = ''; contact = ''; password = ''; terms = false;
+            
+        } catch (error) {
+            console.error('Registration error:', error);
+            toast = { type: 'error', message: 'Could not connect to server' };
+        }
     }
-
-    const data = await response.json()
-    toast = { type: 'success', message: data.message || 'Registration successful!' }
-    
-  } catch (error) {
-    console.error('Registration error:', error)
-    toast = { type: 'error', message: 'Could not connect to server' }
-  }
-}
-
-			body: JSON.stringify({
-				fname,
-				lname,
-				email,
-				password,
-				contact
-			})
-		});
-
-		const data = await response.json();
-
-		console.log(data);
-
-		alert(data.message);
-  }
 
 
   //For Toast Message
