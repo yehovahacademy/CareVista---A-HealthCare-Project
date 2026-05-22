@@ -9,7 +9,7 @@
     async function calculateBMI() {
 
         const response = await fetch(
-            `carevista-a-healthcare-project-production.up.railway.app?weight=${weight}&height=${height}`
+            `carevista-a-healthcare-project-production.up.railway.app/bmi?weight=${weight}&height=${height}`
         )
 
         const data = await response.json()
@@ -31,7 +31,7 @@
  async function checkHydration() {
     try {
         const res = await fetch(
-            `http://127.0.0.1:8000/hydration?water=${water}&goal=${goal}`
+            `carevista-a-healthcare-project-production.up.railway.app/hydration?water=${water}&goal=${goal}`
         )
 
         if (!res.ok) {

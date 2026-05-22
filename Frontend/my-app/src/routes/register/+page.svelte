@@ -9,7 +9,7 @@
 
   async function registerUser() {
 
-		const response = await fetch("carevista-a-healthcare-project-production.up.railway.app", {
+		const response = await fetch("carevista-a-healthcare-project-production.up.railway.app/register", {
 			method: "POST",
 
 			headers: {
