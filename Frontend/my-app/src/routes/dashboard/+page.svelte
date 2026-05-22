@@ -1,37 +1,41 @@
 <script>
  let weight = $state('')
-    let height = $state('')
+let height = $state('')
+let bmi = $state('')          // Changed from $derived to $state so we can assign it
+let status = $state('')
 
-
- let bmi = $derived(() => weight / (height * height))
-    let status = $state('')
-
-    async function calculateBMI() {
-
+async function calculateBMI() {
+    try {
+        // Added https:// to prevent relative route bugs
         const response = await fetch(
-            `carevista-a-healthcare-project-production.up.railway.app/bmi?weight=${weight}&height=${height}`
+            `https://carevista-a-healthcare-project-production.up.railway.app/bmi?weight=${weight}&height=${height}`
         )
 
+        if (!response.ok) {
+            status = `Error: ${response.status}`
+            return
+        }
+
         const data = await response.json()
-
-        bmi = data.bmi
+        bmi = data.bmi         // Works perfectly now
         status = data.status
+    } catch (error) {
+        console.error('Error fetching BMI data:', error)
+        status = 'Error fetching data'
     }
+}
 
+// For hydration
+let water = $state('')
+let goal = $state('')
+let percentage = $state('')
+let hydrationStatus = $state('')
 
-    //For hydration
-
-
-
-  let water = $state('')
-  let goal = $state('')
-  let percentage = $state('')
-  let hydrationStatus = $state('')
-
- async function checkHydration() {
+async function checkHydration() {
     try {
+        // Added https:// to prevent relative route bugs
         const res = await fetch(
-            `carevista-a-healthcare-project-production.up.railway.app/hydration?water=${water}&goal=${goal}`
+            `https://carevista-a-healthcare-project-production.up.railway.app/hydration?water=${water}&goal=${goal}`
         )
 
         if (!res.ok) {
@@ -40,16 +44,13 @@
         }
 
         const data = await res.json()
-
-        hydrationStatus = data.status   // ✅
-        percentage = data.ratio         // ✅
+        hydrationStatus = data.status   
+        percentage = data.ratio         
     } catch (error) {
         console.error('Error fetching hydration data:', error)
         hydrationStatus = 'Error fetching data'
     }
 }
-
-
 
 
 </script>
